@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>任务详情</title>
+    </head>
+
+    <body>
+        <h1>任务详情</h1>
+        <div>
+            <div th:each="item:${history}">
+                <h3 th:text="${item.actName}"></h3>
+                <div>
+                    <ul>
+                        <li th:each="it:${item.process}">
+                            <span th:text="${it.key}"></span>---><span th:text="${it.value}"></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>需要提交的表单</h3>
+
+                <input name="processesId" id="processesId" th:value="${task.processInstanceId}" type="hidden">
+                <input name="taskId" id="taskId" th:value="${task.id}" type="hidden">
+                <form>
+                    <div th:each="item : ${list}">
+                        <div>
+                            <span th:text="${item.name}"></span>
+                        </div>
+
+                        <div>
+                            <input th:if="${item.type.getName() == 'string' }" type="text" th:name="${item.name}" >
+                            <input th:if="${item.type.getName() == 'long' }" type="number" th:name="${item.name}" >
+                            <div th:if="${item.type.getName() == 'boolean' }">
+                                <span>是</span><input th:if="${item.type.getName() == 'boolean' }" type="radio" th:name="${item.name}"  value="是">
+                                <span>否</span><input th:if="${item.type.getName() == 'boolean' }" type="radio" th:name="${item.name}"  value="否">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div>
+                    <button type="button" onclick="submit()">提交</button>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <img src="" id="show">
+        </div>
+
+    </body>
+    <script type="text/javascript" src="/lib/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript">
+        generateProcessImg();
+        //绘制流程图
+        function generateProcessImg() {
+            $.post("/models/"+$("#processesId").val()+"/generateImg", function (res) {
+                $("#show").attr("src","data:image/png;base64," + res.data);
+            });
+        }
+
+        //完成任务
+        function submit() {
+            $.post("/models/"+$("#taskId").val()+"/complete",$("form").serialize(),function (res) {
+                alert(res.msg);
+                window.location.href="/task";
+            })
+        }
+    </script>
+
+</html>

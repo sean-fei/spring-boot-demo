@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>activiti流程</title>
+    </head>
+
+    <body>
+        <div id="top">
+        </div>
+        <h2>模型列表</h2>
+        <hr>
+        <a href="javascript: AJAX.POST('/models/create')">绘制流程</a>
+        <a href="/task">任务列表</a>
+        <a href="/task/history">已办任务</a>
+        <table border="1" id="model-list">
+            <tr>
+                <td>模型编号</td>
+                <td>模型名称</td>
+                <td>版本</td>
+                <td>创建时间</td>
+                <td>操作</td>
+            </tr>
+            <script id="models" type="text/html">
+                <tr>
+                    <td>模型编号</td>
+                    <td>模型名称</td>
+                    <td>版本</td>
+                    <td>创建时间</td>
+                    <td>操作</td>
+                </tr>
+                {{each rows.list}}
+                <tr>
+                    <td>{{$value.id}}</td>
+                    <td>{{$value.name}}</td>
+                    <td>{{$value.version}}</td>
+                    <td>{{$value.createTime}}</td>
+                    <td>
+                        <a href="/editor?modelId={{$value.id}}">编辑</a>
+                        <a href="javascript: AJAX.DELETE('/models/{{$value.id}}')">删除</a>
+                        <a href="javascript: AJAX.POST('/models/{{$value.id}}/deployment')">发布</a>
+                    </td>
+                </tr>
+                {{/each}}
+            </script>
+        </table>
+
+        <div style="visibility:hidden;height:1px;">
+            <hr >
+            <h2 >部署列表</h2>
+            <hr>
+            <table border="1" id="deployment-list" >
+                <tr>
+                    <td>编号</td>
+                    <td>名称</td>
+                    <td>部署时间</td>
+                    <td>操作</td>
+                </tr>
+                <script id="deployments" type="text/html">
+                    <tr>
+                        <td>编号</td>
+                        <td>名称</td>
+                        <td>部署时间</td>
+                        <td>操作</td>
+                    </tr>
+                {{each rows.list}}
+                <tr>
+                    <td>{{$value.id}}</td>
+                    <td><a href="javascript: AJAX.GET('/deployments/{{$value.id}}')">{{$value.name}}</a></td>
+                    <td>{{$value.deploymentTime}}</td>
+                    <td>
+                        <a href="/models/startProcess/{{$value.id}}">启动流程</a>
+                        <a href="javascript: AJAX.GET('/models/startProcesses/{{$value.id}}')">启动流程</a>
+                        <a href="javascript: AJAX.DELETE('/deployments/{{$value.id}}')">删除</a>
+                    </td>
+                </tr>
+                {{/each}}
+                </script>
+            </table>
+        </div>
+
+        <hr>
+        <h2>部署列表</h2>
+        <hr>
+        <table border="1" id="deployment-list-2">
+            <tr>
+                <td>编号</td>
+                <td>名称</td>
+                <td>部署时间</td>
+                <td>操作</td>
+            </tr>
+            <script id="deployments-2" type="text/html">
+                <tr>
+                    <td>编号</td>
+                    <td>模型名称</td>
+                    <td>key</td>
+                    <td>版本</td>
+                    <td>类别</td>
+                    <td>操作</td>
+                </tr>
+                {{each rows.list}}
+                <tr>
+                    <td>{{$value.id}}</td>
+                    <td>{{$value.name}}</td>
+                    <td>{{$value.key}}</td>
+                    <td>{{$value.version}}</td>
+                    <td>{{$value.category}}</td>
+                    <td>
+                        <!--
+                        <a href="/startProcess/{{$value.id}}">启动流程</a>
+                        <a href="javascript: AJAX.DELETE('/deployments/{{$value.id}}')">删除</a>
+                        -->
+                        <a href="javascript: AJAX.POST('/models/{{$value.id}}/start')">启动流程</a>
+                    </td>
+                </tr>
+                {{/each}}
+            </script>
+        </table>
+
+        <script type="text/javascript" src="/lib/js/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="/lib/js/jquery.cookie.js"></script>
+        <script type="text/javascript" src="/js/ajax-util.js"></script>
+        <script type="text/javascript" src="/lib/js/template.js"></script>
+
+        <script type="text/javascript">
+            $(function() {
+                AJAX.GET("/models", null
+                        , function (result) {
+                            var html = template("models", result);
+                            $("#model-list").html(html);
+                        });
+
+                AJAX.GET("/deployments", null
+                    , function (result) {
+                        var html = template("deployments", result);
+                        $("#deployment-list").html(html);
+                    });
+
+                AJAX.GET("/models/startPage", null
+                    , function (result) {
+                        var html = template("deployments-2", result);
+                        $("#deployment-list-2").html(html);
+                    });
+            });
+        </script>
+    </body>
+</html>
