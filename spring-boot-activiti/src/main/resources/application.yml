@@ -7,7 +7,9 @@ spring:
     job-executor-activate: true # asyncExecutorEnabled属性设置设置true后将代替那些老的Job executor
     check-process-definitions: false # 自动部署验证设置:true-开启（默认）、false-关闭
 
-#  security:
+  security:
+    basic:
+      enabled: false
 #    user:
 #      name: user
 #      password: 123456
@@ -70,9 +72,23 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr(-%5p)  %clr(${PID:- }){magenta} --- %clr([%15.15t]){faint} %highlight(%-80.80logger{300}){cyan} %clr(:) %m %n%wEx"
 
-security:
-  basic:
-    enabled: false
 
 server:
   port: 8090
+
+# 监控模块
+#management:
+#  # 端点信息接口使用的端口，为了和主系统接口使用的端口进行分离
+#  server:
+#    port: 8081
+#    servlet:
+#      context-path: /sys
+#  # 端点健康情况，默认值"never"，设置为"always"可以显示硬盘使用情况和线程情况
+#  endpoint:
+#    health:
+#      show-details: always
+#  # 设置端点暴露的哪些内容，默认["health","info"]，设置"*"代表暴露所有可访问的端点
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'

@@ -1,10 +1,10 @@
-package com.sean.springbootactiviti;
+package com.sean.springbootadminclient;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringBootActivitiApplicationTests {
+class SpringBootAdminClientApplicationTests {
 
     @Test
     void contextLoads() {
